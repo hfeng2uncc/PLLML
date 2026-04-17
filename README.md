@@ -21,15 +21,12 @@
 - [Prerequisites](#prerequisites)
 - [Visualization tools](#Visualization-tools)
 - [Datasets](#datasets)
-- [Modeling with mGLI-based features](#Modeling-with-mGLI-based-features)
-    - [mGLI-based B-factor prediction](#i-mgli-based-b-factor-prediction)
-    - [Generation of mGLI-based features for protein-ligand complex](#II-Generation-of-mGLI-based-features-for-protein-ligand-complex)
-    - [Generation of mGLI-based features for small molecule](#III-Generation-of-mGLI-based-features-for-small-molecule)
-    - [Generation of sequence-based features for protein or small molecules](#IV-Generation-of-sequence-based-features-for-protein-or-small-molecules)
+- [Modeling with PLL-based features](#Modeling-with-PLL-based-features)
+    - [Generation of PLL-based features for protein-ligand complex](#II-Generation-of-mGLI-based-features-for-protein-ligand-complex)
+    - [Generation of PLL-based features for small molecule](#III-Generation-of-PLL-based-features-for-small-molecule)
 
 - [Results](#results)
-    - [I. Modeling the B-factor datasets]()
-    - [II. Modeling the PDBbind datasets]()
+    - [I. Modeling the PDBbind datasets]()
 - [License](#license)
 - [Citation](#citation)
 
@@ -100,19 +97,19 @@ python codes/mGLI-ligand.py --mol2_path datasets/PDBbind/2eg8/2eg8_ligand.mol2 -
 
 ### II. Modeling the PDBbind datasets
 
-#### 1. Modeling with \#{mGLI-all & mGLI-lig-all,TF} features
+#### 1. Modeling with PLL features
 |Datasets                                        | Training Set                  | Test Set| PCC | RMSE (kcal/mol) |
 |-------------------------------------------------|-------------                  |---------|-    |-                |
-| PDBbind-v2007 [result](./Results)      |1300 |1105  | **0.835** |1.888|
-| PDBbind-v2013 [result](./Results)      |2959|2764  | **0.819** |1.930|
-| PDBbind-v2016 [result](./Results)      |4057|3767  | 0.857 |1.673|
+| PDBbind-v2007 [result](./Results)      |1105| 195  | 0.813 |1.971|
+| PDBbind-v2013 [result](./Results)      |2764| 195  | 0.792 |1.976|
+| PDBbind-v2016 [result](./Results)      |3767| 290  | 0.850 |1.672|
 
-#### 2. Modeling with \#{mGLI-bin & mGLI-lig-all,TF} features
+#### 2. Modeling with \#{PLL,Transformer} features
 |Datasets                                        | Training Set                  | Test Set| PCC | RMSE (kcal/mol) |
 |-------------------------------------------------|-------------                  |---------|-    |-                |
-| PDBbind-v2007 [result](./Results)      |1105| 195  | 0.831 |1.932|
-| PDBbind-v2013 [result](./Results)      |2764| 195  | **0.819** | 1.948|
-| PDBbind-v2016 [result](./Results)      |3767| 290  | **0.862** |1.671|
+| PDBbind-v2007 [result](./Results)      |1105| 195  | 0.827 |1.925|
+| PDBbind-v2013 [result](./Results)      |2764| 195  | 0.813 | 1.932|
+| PDBbind-v2016 [result](./Results)      |3767| 290  | 0.861 |1.646|
 
 
 Note, twenty gradient boosting regressor tree (GBRT) models were built for each dataset with distinct random seeds such that initialization-related errors can be addressed. The mGLI-based features and transformer-based features were paired with GBRT, respectively. The consensus predictions (\#{mGLI-all & mGLI-lig-all,TF} or \#{mGLI-bin & mGLI-lig-all,TF}) were obtained using predictions from the two types of models. The predictions can be found in the [results](./Results) folder. 
