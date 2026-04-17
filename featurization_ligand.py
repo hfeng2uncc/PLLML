@@ -24,49 +24,52 @@ Given a point cloud and a target point, this program performs the following:
 from VR_complex import PointCloudRips
 from link_calculator import LinkCalculator
 import numpy as np
+
 # from laplacian_calculator import LaplacianCalculator
 
+
 def features_localpoint(eigenvalues_LP):
-    
+
     eigenvalues_LP = np.array(eigenvalues_LP)
     tolerance = 1e-6
     positive_eigenvalues = np.array([e for e in eigenvalues_LP if e > tolerance])
-    
-    num_statistics = 9 # num of statistics features for each point in a point cloud
+
+    num_statistics = 9  # num of statistics features for each point in a point cloud
     # Calculate the mean, median, and standard deviation of the eigenvalues
     if len(positive_eigenvalues) > 0:
         features_point = [
-        np.sum(positive_eigenvalues),
-        np.mean(positive_eigenvalues),
-        np.median(positive_eigenvalues),
-        np.std(positive_eigenvalues),
-        np.var(positive_eigenvalues),
-        np.max(positive_eigenvalues),
-        np.min(positive_eigenvalues),
-        np.sum(np.power(positive_eigenvalues, 2)),
-        np.shape(eigenvalues_LP[eigenvalues_LP < tolerance])[0]
+            np.sum(positive_eigenvalues),
+            np.mean(positive_eigenvalues),
+            np.median(positive_eigenvalues),
+            np.std(positive_eigenvalues),
+            np.var(positive_eigenvalues),
+            np.max(positive_eigenvalues),
+            np.min(positive_eigenvalues),
+            np.sum(np.power(positive_eigenvalues, 2)),
+            np.shape(eigenvalues_LP[eigenvalues_LP < tolerance])[0],
         ]
-        
+
     else:
-        features_point = [0] * (num_statistics-1)
+        features_point = [0] * (num_statistics - 1)
         features_point.append(np.shape(eigenvalues_LP[eigenvalues_LP < tolerance])[0])
 
     return features_point
 
+
 def _compute_statistical_features(features_points_list, stats):
     """
     Helper function to compute statistical features for a list of point features.
-    
+
     Args:
         features_points_list: List of feature arrays for each filtration distance
         stats: List of statistical operations to perform
-        
+
     Returns:
         Dictionary with statistical features computed across all filtration distances
     """
     # Initialize result dictionary with empty lists
     result_dict = {stat: [] for stat in stats}
-    
+
     # Statistical operation mapping
     stat_operations = {
         "sum": np.sum,
@@ -75,11 +78,11 @@ def _compute_statistical_features(features_points_list, stats):
         "std": np.std,
         "max": np.max,
         "min": np.min,
-        "var": np.var
+        "var": np.var,
     }
-    
+
     # print("features_points_list",features_points_list)
-    
+
     num_statistics = 9
     # Compute features for each filtration distance
     for features_at_distance in features_points_list:
@@ -88,20 +91,23 @@ def _compute_statistical_features(features_points_list, stats):
             # print("enter zero statistics....")
             # Handle empty case - extend with zeros
             for stat in stats:
-                result_dict[stat].extend([0.0] * num_statistics)  # 9 features from features_eigenvalues
+                result_dict[stat].extend(
+                    [0.0] * num_statistics
+                )  # 9 features from features_eigenvalues
         else:
-            
+
             # print("enter non-zero statistics....")
             # Convert to numpy array for vectorized operations
             features_array = np.array(features_at_distance)
-            
+
             # Compute each statistical measure
             for stat in stats:
                 operation = stat_operations[stat]
                 computed_features = operation(features_array, axis=0)
                 result_dict[stat].extend(computed_features)
-    
+
     return result_dict
+
 
 def features_pointcloud(pointcloud, pc, rips_dict, filtration_dists, max_dim=2):
     """
@@ -111,12 +117,12 @@ def features_pointcloud(pointcloud, pc, rips_dict, filtration_dists, max_dim=2):
     - Compute link of target point
     - Analyze combinatorial Laplacians of link (L0, L1)
     """
-    
+
     # print("start computing features.......")
-    
-    stats_cloud = ["sum", "mean", "median", "std", "max", "min", "var"]     # 7 statistics 
+
+    stats_cloud = ["sum", "mean", "median", "std", "max", "min", "var"]  # 7 statistics
     num_filtration_dists = len(filtration_dists)
-    
+
     features_pointcloud_dict_LIG = {}
 
     # # Initialize point cloud
@@ -127,7 +133,7 @@ def features_pointcloud(pointcloud, pc, rips_dict, filtration_dists, max_dim=2):
     features_points_dict_Lig = {}
     for dim in range(max_dim):
         features_points_dict_Lig[dim] = [[] for _ in range(num_filtration_dists)]
-        
+
     for id_filtration, (dist, rips) in enumerate(rips_dict.items()):
         # print(f"\nDistance threshold: {dist:.4f}")
         simplices = [tuple(s) for s in rips["simplices"]]
@@ -148,14 +154,15 @@ def features_pointcloud(pointcloud, pc, rips_dict, filtration_dists, max_dim=2):
                 eigenvalues_LP = analysis["eigenvalues"]
                 features_point = features_localpoint(eigenvalues_LP)
                 features_points_dict_Lig[dim][id_filtration].append(features_point)
-                
-    # Compute statistical features using the helper function
-    
-    for dim in range(max_dim):
-        features_pointcloud_dict_LIG[dim] = _compute_statistical_features(features_points_dict_Lig[dim], stats_cloud)
-       
-    return features_pointcloud_dict_LIG
 
+    # Compute statistical features using the helper function
+
+    for dim in range(max_dim):
+        features_pointcloud_dict_LIG[dim] = _compute_statistical_features(
+            features_points_dict_Lig[dim], stats_cloud
+        )
+
+    return features_pointcloud_dict_LIG
 
 
 # =========================
@@ -197,6 +204,6 @@ if __name__ == "__main__":
         (1, 7),
     ]
     localpoint = (2, 8)
-    filtration_dists = np.linspace(0,10,num=21,endpoint=True)[2:]
-    print("filtration_dists",filtration_dists)
-    features_pointcloud(points, localpoint,filtration_dists)
+    filtration_dists = np.linspace(0, 10, num=21, endpoint=True)[2:]
+    print("filtration_dists", filtration_dists)
+    features_pointcloud(points, localpoint, filtration_dists)
