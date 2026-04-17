@@ -47,9 +47,9 @@ Accurate prediction of protein–ligand binding affinity remains a central chall
 
 Schematic illustration of the overall persistent Local Laplacian platform for protein-ligand binding affinity prediction. The model architecture is shown in below.
 
-![Model Architecture](concepts.png)
+![Model Architecture](concept.png)
 
-Further explain the details in the [paper](https://github.com/WeilabMSU/mGLI-KDA), providing context and additional information about the architecture and its components.
+Further explain the details in the [paper](https://arxiv.org/abs/2603.21503), providing context and additional information about the architecture and its components.
 
 ---
 
@@ -57,88 +57,46 @@ Further explain the details in the [paper](https://github.com/WeilabMSU/mGLI-KDA
 
 - numpy                     1.21.0
 - scipy                     1.7.3
-- pytorch                   1.10.0 
-- pytorch-cuda              11.7
-- torchvision               0.11.1
 - scikit-learn              1.0.2
 - python                    3.10.12
 - biopandas                 0.4.1
 - Biopython                 1.75
 
 ---
-## Visualization tools
-
-- vispy 0.12.1
-
-- pymol
-
---- 
 
 ## Datasets
 
 A brief introduction about the benchmarks.
 
 | Datasets                |Total    | Training Set                 | Test Set                                             |
-|-|-----------------------------|------------------------------|------------------------------                        |
-| Bfactor-Set364 | 364  [Data](./datasets)     |   -    |      -                                                            |
-| Bfactor-small | 30     [Data](./datasets)  |   -    |      -                                                            |
-| Bfactor-medium | 36    [Data](./datasets)  |   -    |      -                                                            |
-| Bfactor-large | 34   [Data](./datasets)    |   -    |      -                                                            |
+|-|-----------------------------|------------------------------|------------------------------                        |-                                                            |
 | PDBbind-v2007       |1300 |1105  [Label](https://weilab.math.msu.edu/Downloads/mGLI-KDA/PDBbind.zip)                        | 195 [Label](https://weilab.math.msu.edu/Downloads/mGLI-KDA/PDBbind.zip)                         |
 | PDBbind-v2013       |2959|2764  [Label](https://weilab.math.msu.edu/Downloads/mGLI-KDA/PDBbind.zip)                        | 195 [Label](https://weilab.math.msu.edu/Downloads/mGLI-KDA/PDBbind.zip)                         |
 | PDBbind-v2016       |4057|3767  [Label](https://weilab.math.msu.edu/Downloads/mGLI-KDA/PDBbind.zip)                        | 290 [Label](https://weilab.math.msu.edu/Downloads/mGLI-KDA/PDBbind.zip)                         |
-| toxicity: IGC50       |1792 [Data](https://weilab.math.msu.edu/Downloads/toxicity_data.zip)|1434                          | 358 |
-| toxicity: LC50       |823 [Data](https://weilab.math.msu.edu/Downloads/toxicity_data.zip)|659 |164
-| toxicity: LC50DM       |353 [Data](https://weilab.math.msu.edu/Downloads/mGLI-KDA/toxicity_data.zip)|283                          | 70 
-| toxicity: LD50       |7413 [Data](https://weilab.math.msu.edu/Downloads/mGLI-KDA/toxicity_data.zip)                        |5931  | 1482 
-| hERG: Zhang data       |1163 [Data](https://weilab.math.msu.edu/Downloads/mGLI-KDA/hERG-data.zip)|927                          | 236
-| hERG: Li data       |4813 [Data](https://weilab.math.msu.edu/Downloads/mGLI-KDA/hERG-data.zip)|3721                          | 1092 
-| hERG: Cai data       |4447 [Data](https://weilab.math.msu.edu/Downloads/mGLI-KDA/hERG-data.zip)|3954                          | 493 
 
 
 
 - PDBbind RawData: the protein-ligand complex structures. Download from [PDBbind database](http://www.pdbbind.org.cn/)
 - Label: the .csv file, which contains the protein ID and corresponding binding affinity for PDBbind data.
-- Data for B-factor datasets: molecular 3D structures
-- Data for hERG and toxicity datasets: molecular 3D structures, SMILES strings, and labels
 ---
 
 ## Modeling with mGLI-based features
-### I. mGLI-based B-factor prediction
 
-```shell
-# examples, dataset_name options: Bfactor-Set364, Bfactor-large, Bfactor-medium, Bfactor-small
-python codes/mGLI-Bfactor.py --dataset_name Bfactor-small
-```
-
-
-### II. Generation of mGLI-based features for protein-ligand complex
-Example with PDB 2eg8, generating mGLI features with "bin" manner and "median" statistics for atom-by-atom Gauss linking integral.
-"all" can also be used and "std" statistics is also available for atom-by-atom Gauss linking integral, output: 2eg8-complex-median-bin.npy
+### I. Generation of mGLI-based features for protein-ligand complex
+Example with PDB 1c87, generating PLL features. Output: 2eg8-complex-median-bin.npy
 ```shell
 python codes/mGLI-protein-ligand.py --pdbid 2eg8 --bin_or_all bin --integral_type median
 ```
 
-### III. Generation of mGLI-based features for small molecule
+### II. Generation of mGLI-based features for small molecule
 Example with the ligand in protein complex PDB 2eg8, generating mGLI features with "bin" manner and "median" statistics for atom-by-atom Gauss linking integral. Statistics of "all" can also be used.  output: 2eg8-ligand-median-bin.npy
 ```shell
 python codes/mGLI-ligand.py --mol2_path datasets/PDBbind/2eg8/2eg8_ligand.mol2 --mol2_id 2eg8 --bin_or_all bin --integral_type median
 ```
-### IV. Generation of sequence-based features for protein or small molecules
-Protein sequence embeddings were generated with [Transformer Protein language model](https://github.com/facebookresearch/esm).
-
-Small molecular sequence embeddings were generated with
-[Transformer small molecule language model](https://github.com/WeilabMSU/PretrainModels), and [Autoencoder small molecule language model](https://github.com/jrwnter/cddd)
 
 ---
 
 ## Results
-
-### I. Modeling the Set-364 b-factor dataset
-| Models       | [GNM](https://dyn.life.nthu.edu.tw/oGNM/oGNM.php) [result](./Results)  | pfFRI [result](./Results)| ASPH | opFRI [result](./Results)| EH   | mGLI [result](./Results)|
-|--------------|-------|-------|------|-------|------|------|
-| PCC          | 0.565 | 0.626 | 0.65 | 0.673 | 0.698| 0.762|
-
 
 ### II. Modeling the PDBbind datasets
 
@@ -169,6 +127,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Citation
 
-- Li Shen, Hongsong Feng, Fengling Li, Fengchun Lei, Jie Wu, and Guo-Wei Wei, "Knot data analysis using multiscale Gauss link integral"
+- Jian Liu and Hongsong Feng, "Persistent local Laplacian prediction of protein-ligand binding affinities"
 
 ---
