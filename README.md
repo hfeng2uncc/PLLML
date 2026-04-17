@@ -65,30 +65,31 @@ Further explain the details in the [paper](https://arxiv.org/abs/2603.21503), pr
 
 A brief introduction about the benchmarks.
 
-| Datasets                |Total    | Training Set                 | Test Set                                             |
-|-|-----------------------------|------------------------------|------------------------------                        |-                                                            |
-| PDBbind-v2007       |1300 |1105  [Label](https://weilab.math.msu.edu/Downloads/mGLI-KDA/PDBbind.zip)                        | 195 [Label](https://weilab.math.msu.edu/Downloads/mGLI-KDA/PDBbind.zip)                         |
-| PDBbind-v2013       |2959|2764  [Label](https://weilab.math.msu.edu/Downloads/mGLI-KDA/PDBbind.zip)                        | 195 [Label](https://weilab.math.msu.edu/Downloads/mGLI-KDA/PDBbind.zip)                         |
-| PDBbind-v2016       |4057|3767  [Label](https://weilab.math.msu.edu/Downloads/mGLI-KDA/PDBbind.zip)                        | 290 [Label](https://weilab.math.msu.edu/Downloads/mGLI-KDA/PDBbind.zip)                         |
+| Datasets        | Total | Training Set | Test Set |
+|----------------|-------|--------------|----------|
+| PDBbind-v2007  | 1300  | 1105 [Label](datasets) | 195 [Label](datasets) |
+| PDBbind-v2013  | 2959  | 2764 [Label](datasets) | 195 [Label](datasets) |
+| PDBbind-v2016  | 4057  | 3767 [Label](datasets) | 290 [Label](datasets) |
 
 
-
-- PDBbind RawData: the protein-ligand complex structures. Download from [PDBbind database](http://www.pdbbind.org.cn/)
+- PDBbind RawData: the protein-ligand complex structures. Download from [PDBbind database](https://www.pdbbind-plus.org.cn/)
 - Label: the .csv file, which contains the protein ID and corresponding binding affinity for PDBbind data.
 ---
 
-## Modeling with mGLI-based features
+## Modeling with PLL-based features
 
-### I. Generation of mGLI-based features for protein-ligand complex
-Example with PDB 1c87, generating PLL features. Output: 2eg8-complex-median-bin.npy
+### I. Generation of PLL-based features for protein-ligand complex
+Example with PDB 1c87, generating PLL features. 
+Output: 2eg8-complex-median-bin.npy
 ```shell
-python codes/mGLI-protein-ligand.py --pdbid 2eg8 --bin_or_all bin --integral_type median
+python codes/PLL_features.py --pdbid 1c87
 ```
 
 ### II. Generation of mGLI-based features for small molecule
-Example with the ligand in protein complex PDB 2eg8, generating mGLI features with "bin" manner and "median" statistics for atom-by-atom Gauss linking integral. Statistics of "all" can also be used.  output: 2eg8-ligand-median-bin.npy
+Example with the ligand in protein complex PDB 1c87, generating PLL features.
+output: 2eg8-ligand-median-bin.npy
 ```shell
-python codes/mGLI-ligand.py --mol2_path datasets/PDBbind/2eg8/2eg8_ligand.mol2 --mol2_id 2eg8 --bin_or_all bin --integral_type median
+python codes/PLL_features_ligand.py --pdbid 1c87
 ```
 
 ---
@@ -112,7 +113,7 @@ python codes/mGLI-ligand.py --mol2_path datasets/PDBbind/2eg8/2eg8_ligand.mol2 -
 | PDBbind-v2016 [result](./Results)      |3767| 290  | 0.861 |1.646|
 
 
-Note, twenty gradient boosting regressor tree (GBRT) models were built for each dataset with distinct random seeds such that initialization-related errors can be addressed. The mGLI-based features and transformer-based features were paired with GBRT, respectively. The consensus predictions (\#{mGLI-all & mGLI-lig-all,TF} or \#{mGLI-bin & mGLI-lig-all,TF}) were obtained using predictions from the two types of models. The predictions can be found in the [results](./Results) folder. 
+Note, twenty gradient boosting regressor tree (GBRT) models were built for each dataset with distinct random seeds such that initialization-related errors can be addressed. The PLL-based features and transformer-based features were paired with GBRT, respectively. The consensus predictions were obtained using predictions from the two types of models. The predictions can be found in the [results](./Results) folder. 
 
 ---
 

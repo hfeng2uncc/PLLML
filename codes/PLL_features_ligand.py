@@ -119,19 +119,18 @@ class PLL_Feature:
         return ES_features_pointcloud_dict
 
 
-def save_feature_PLL(args, list_compound_id, filtration_dists):
+def save_feature_PLL(args, pdbid, filtration_dists):
 
-    for pdbid in list_compound_id:
-        print(f"Processing: {pdbid}")
-        mol2file = f"{args.pdb_path}/{pdbid}/{pdbid}_ligand.mol2"
-        PLL_object = PLL_Feature(mol2file, filtration_dists, args.max_dim)
+    print(f"Processing: {pdbid}")
+    mol2file = f"{args.pdb_path}/{pdbid}/{pdbid}_ligand.mol2"
+    PLL_object = PLL_Feature(mol2file, filtration_dists, args.max_dim)
 
-        ES_features_pointcloud_dict = PLL_object.PLL_features_ES()
+    ES_features_pointcloud_dict = PLL_object.PLL_features_ES()
 
-        for dim in range(args.max_dim):
-            save_path = f"{args.feature_path}/{pdbid}/{pdbid}_L{dim}-fil{args.filtration_upper}_ligand.pkl"
-            with open(save_path, "wb") as f:
-                pickle.dump(ES_features_pointcloud_dict[dim], f)
+    for dim in range(args.max_dim):
+        save_path = f"{args.feature_path}/{pdbid}/{pdbid}_L{dim}-fil{args.filtration_upper}_ligand.pkl"
+        with open(save_path, "wb") as f:
+            pickle.dump(ES_features_pointcloud_dict[dim], f)
 
 
 def main(args):
@@ -140,10 +139,8 @@ def main(args):
 
     filtration_radius = np.arange(2, args.filtration_upper + args.dr, args.dr)
 
-    pdbid = "1c87"
-    list_compound_id = [pdbid]
-
-    save_feature_PLL(args, list_compound_id, filtration_radius)
+    pdbid = args.pdbid
+    save_feature_PLL(args, pdbid, filtration_radius)
 
     t1 = time.time()
 
@@ -155,6 +152,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Get PL features for pdbbind")
     parser.add_argument("--feature_path", type=str, default="features")
     parser.add_argument("--pdb_path", type=str, default="PDBs")
+    parser.add_argument("--pdbid", type=str)
     parser.add_argument("--filtration_upper", type=int, default=10)
     parser.add_argument("--dr", type=float, default=0.5)
     parser.add_argument("--max_dim", type=int, default=2)
