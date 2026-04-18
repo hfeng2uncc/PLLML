@@ -80,14 +80,14 @@ A brief introduction about the benchmarks.
 
 ### I. Generation of PLL-based features for protein-ligand complex
 Example with PDB 1c87, generating PLL features. 
-Output: 2eg8-complex-median-bin.npy
+Output: 1c87-complex-median-bin.npy
 ```shell
 python codes/PLL_features.py --pdbid 1c87
 ```
 
-### II. Generation of mGLI-based features for small molecule
+### II. Generation of PLL-based features for small molecule
 Example with the ligand in protein complex PDB 1c87, generating PLL features.
-output: 2eg8-ligand-median-bin.npy
+output: 1c87-ligand-median-bin.npy
 ```shell
 python codes/PLL_features_ligand.py --pdbid 1c87
 ```
@@ -101,19 +101,19 @@ python codes/PLL_features_ligand.py --pdbid 1c87
 #### 1. Modeling with PLL features
 |Datasets                                        | Training Set                  | Test Set| PCC | RMSE (kcal/mol) |
 |-------------------------------------------------|-------------                  |---------|-    |-                |
-| PDBbind-v2007 [result](./Results)      |1105| 195  | 0.813 |1.971|
-| PDBbind-v2013 [result](./Results)      |2764| 195  | 0.792 |1.976|
-| PDBbind-v2016 [result](./Results)      |3767| 290  | 0.850 |1.672|
+| PDBbind-v2007 [result](./results)      |1105| 195  | 0.813 |1.971|
+| PDBbind-v2013 [result](./results)      |2764| 195  | 0.792 |1.976|
+| PDBbind-v2016 [result](./results)      |3767| 290  | 0.850 |1.672|
 
 #### 2. Modeling with \#{PLL,Transformer} features
 |Datasets                                        | Training Set                  | Test Set| PCC | RMSE (kcal/mol) |
 |-------------------------------------------------|-------------                  |---------|-    |-                |
-| PDBbind-v2007 [result](./Results)      |1105| 195  | 0.827 |1.925|
-| PDBbind-v2013 [result](./Results)      |2764| 195  | 0.813 | 1.932|
-| PDBbind-v2016 [result](./Results)      |3767| 290  | 0.861 |1.646|
+| PDBbind-v2007 [result](./results)      |1105| 195  | 0.827 |1.925|
+| PDBbind-v2013 [result](./results)      |2764| 195  | 0.813 | 1.932|
+| PDBbind-v2016 [result](./results)      |3767| 290  | 0.861 |1.646|
 
 
-Note, twenty gradient boosting regressor tree (GBRT) models were built for each dataset with distinct random seeds such that initialization-related errors can be addressed. The PLL-based features and transformer-based features were paired with GBRT, respectively. The consensus predictions were obtained using predictions from the two types of models. The predictions can be found in the [results](./Results) folder. 
+Note, twenty gradient boosting regressor tree (GBRT) models were built for each dataset with distinct random seeds such that initialization-related errors can be addressed. The PLL-based features and transformer-based features were paired with GBRT, respectively. The consensus predictions were obtained using predictions from the two types of models. The predictions can be found in the [results](./results) folder. 
 
 ---
 
