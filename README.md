@@ -80,14 +80,14 @@ A brief introduction about the benchmarks.
 
 ### I. Generation of PLL-based features for protein-ligand complex
 Example with PDB 1c87, generating PLL features. 
-Output: 1c87-complex-median-bin.npy
+Output: 1c87_L0_ES_PRO_r12.00-fil6.pkl, 1c87_L1_ES_PRO_r12.00-fil6.pkl, 1c87_L0_ES_LIG_r12.00-fil6.pkl, 1c87_L1_ES_LIG_r12.00-fil6.pkl
 ```shell
 python codes/PLL_features.py --pdbid 1c87
 ```
 
 ### II. Generation of PLL-based features for small molecule
 Example with the ligand in protein complex PDB 1c87, generating PLL features.
-output: 1c87-ligand-median-bin.npy
+output: 1c87_L0-fil10_ligand.pkl, 1c87_L1-fil10_ligand.pkl
 ```shell
 python codes/PLL_features_ligand.py --pdbid 1c87
 ```
